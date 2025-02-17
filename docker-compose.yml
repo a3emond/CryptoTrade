@@ -1,0 +1,62 @@
+
+services:
+  app:
+    container_name: crypto_php
+    build:
+      context: ./docker/php  
+    volumes:
+      - ./app:/var/www/html
+      - ./app/composer.json:/var/www/html/composer.json
+      - ./app/composer.lock:/var/www/html/composer.lock
+      - ./app/vendor:/var/www/html/vendor
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
+
+
+  webserver:
+    container_name: crypto_nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./app:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/certs/server.crt:/etc/nginx/ssl/server.crt
+      - ./docker/nginx/certs/server.key:/etc/nginx/ssl/server.key
+
+    depends_on:
+      - app
+
+  db:
+    container_name: crypto_mysql
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: crypto_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    container_name: crypto_phpmyadmin
+    image: phpmyadmin:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data: {}

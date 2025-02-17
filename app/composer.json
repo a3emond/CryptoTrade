@@ -1,0 +1,19 @@
+{
+    "name": "cryptotrade/app",
+    "description": "a PHP basez simalated crypptocurrency exchange",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Cryptotrade\\App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alex Xavier",
+            "email": "a3emond@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
